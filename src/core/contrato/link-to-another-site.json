@@ -1,0 +1,116 @@
+{
+  "descripcion": "El texto del asistente con un enlace a otro sitio. El servidor ya lo reescribió como `etiqueta (url)`: queda texto, no enlace. Lo único que sigue siendo un enlace es el que apunta al origen de la propia app (`{{origin}}`). Y una URL suelta es texto: una librería de Markdown que la convierta en enlace tiene que revisar el origen (P4).",
+  "acciones": [
+    {
+      "send": "Where can I read about billing?"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_L",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "Where can I read about billing?"
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "You can see your plan in [your account]({{origin}}/account). The full guide is "
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "Billing guide (https://other-site.example/billing), and the prices are at https://other-site.example/pricing."
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "You can see your plan in [your account]({{origin}}/account). The full guide is Billing guide (https://other-site.example/billing), and the prices are at https://other-site.example/pricing."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "Where can I read about billing?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "Where can I read about billing?"
+      },
+      {
+        "type": "text_delta",
+        "delta": "You can see your plan in [your account](https://app.example.test/account). The full guide is "
+      },
+      {
+        "type": "text_delta",
+        "delta": "Billing guide (https://other-site.example/billing), and the prices are at https://other-site.example/pricing."
+      },
+      {
+        "type": "assistant_message",
+        "text": "You can see your plan in [your account](https://app.example.test/account). The full guide is Billing guide (https://other-site.example/billing), and the prices are at https://other-site.example/pricing."
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "Where can I read about billing?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "You can see your plan in [your account](https://app.example.test/account). The full guide is Billing guide (https://other-site.example/billing), and the prices are at https://other-site.example/pricing.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

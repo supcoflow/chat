@@ -1,0 +1,128 @@
+{
+  "descripcion": "La persona vuelve al día siguiente: el cursor guardado ya no abre (el sello vence a las 24 h; también si es de otro proyecto o fue revocado). El servidor contesta a la recuperación con UN evento terminal `sesion_vencida`. No hay nada que reintentar; el chat no queda vacío ni «llenándose», y el próximo mensaje abre una conversación nueva.",
+  "guardado": {
+    "id": "ses_old",
+    "indice": 9
+  },
+  "acciones": [
+    {
+      "esperarRebobinado": true
+    },
+    {
+      "send": "Hello again"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "error",
+          "codigo": "sesion_vencida",
+          "mensaje": "The session is no longer active.",
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_new",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "Hello again"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Hi! How can I help?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 3
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/sesion/ses_old/eventos?desde=0"
+      },
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "Hello again"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "error",
+        "error": {
+          "code": "sesion_vencida",
+          "message": "The session is no longer active.",
+          "terminal": true
+        }
+      },
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "Hello again"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Hi! How can I help?"
+      },
+      {
+        "type": "turn_end",
+        "index": 3
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "Hello again",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Hi! How can I help?",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

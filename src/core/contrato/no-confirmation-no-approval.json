@@ -1,0 +1,112 @@
+{
+  "descripcion": "Sin una confirmación pendiente, confirmReport / reviseReport / answer no mandan NADA: el reporte no se aprueba por su cuenta, ni se contesta una pregunta que no está. (No hay pedidos de más en `esperado.pedidos`.)",
+  "acciones": [
+    {
+      "confirmReport": true
+    },
+    {
+      "send": "hello"
+    },
+    {
+      "confirmReport": true
+    },
+    {
+      "reviseReport": true
+    },
+    {
+      "answer": {
+        "optionId": "approve"
+      }
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_G",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "hello"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Hi."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 3
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "hello"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Hi."
+      },
+      {
+        "type": "turn_end",
+        "index": 3
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Hi.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

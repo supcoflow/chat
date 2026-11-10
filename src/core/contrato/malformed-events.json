@@ -1,0 +1,153 @@
+{
+  "descripcion": "Un evento CONOCIDO con un campo de menos o de otro tipo se trata como no recibido: nunca llega al estado ni a los eventos públicos. En particular una confirmación incompleta (`opciones: null`, una opción sin `label`, un `reporte` al que le falta el cuerpo) no se muestra — fallar cerrado, no inventar una pregunta aprobable — y la charla sigue con los eventos válidos que vienen después (revisión 1 del núcleo, P2-3).",
+  "acciones": [
+    {
+      "send": "hello"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_M",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "hello"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_bad1",
+          "kind": "tool-approval",
+          "prompt": "¿Lo mando?",
+          "opciones": null,
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_bad2",
+          "kind": "tool-approval",
+          "prompt": "¿Lo mando?",
+          "opciones": [
+            {
+              "id": "approve",
+              "style": "primary"
+            }
+          ],
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_bad3",
+          "kind": "tool-approval",
+          "prompt": "¿Lo mando?",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Sí",
+              "style": "primary"
+            }
+          ],
+          "libre": false,
+          "reporte": {
+            "titulo": "Solo el título"
+          }
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": 5
+        },
+        {
+          "v": 1,
+          "t": "asistente"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": "7"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Still here."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 7
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "hello"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Still here."
+      },
+      {
+        "type": "turn_end",
+        "index": 7
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Still here.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

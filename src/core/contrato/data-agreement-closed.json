@@ -1,0 +1,175 @@
+{
+  "descripcion": "El proyecto cerró su acuerdo de datos: `GET /api/chat/estado` dice `permite` en falso para todo. El núcleo lo sondea ANTES del primer mensaje (sin gastar tope), lo muestra en `allows` y la charla sigue igual; el filtro de verdad es del servidor.",
+  "acciones": [
+    {
+      "send": "How do I export my data?"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_A",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "How do I export my data?"
+        },
+        {
+          "v": 1,
+          "t": "actividad",
+          "que": "leyendo_la_guia"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "guia_leida",
+          "seccion": "Exports"
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "You can export "
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "from **Reports**."
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "You can export from **Reports**."
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "respondida"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 12
+        }
+      ]
+    }
+  ],
+  "permite": {
+    "capturas": false,
+    "elementos": false,
+    "pagina_y_navegador": false
+  },
+  "evidencias": [
+    {
+      "http": 403,
+      "cuerpo": {
+        "ok": false,
+        "motivo": "no_permitida"
+      }
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "How do I export my data?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "How do I export my data?"
+      },
+      {
+        "type": "activity",
+        "activity": "reading_guide"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "guide_read",
+          "section": "Exports"
+        }
+      },
+      {
+        "type": "text_delta",
+        "delta": "You can export "
+      },
+      {
+        "type": "text_delta",
+        "delta": "from **Reports**."
+      },
+      {
+        "type": "assistant_message",
+        "text": "You can export from **Reports**."
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "answered"
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 12
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "How do I export my data?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "You can export from **Reports**.",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "guide_read",
+              "section": "Exports"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "role": "outcome",
+          "outcome": {
+            "kind": "answered"
+          }
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": false,
+        "elements": false,
+        "pageAndBrowser": false
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Custom Supcoflow chat</title>
+<style>
+  body { font: 15px system-ui, sans-serif; max-width: 560px; margin: 2rem auto; padding: 0 1rem; }
+  .log { display: flex; flex-direction: column; gap: .5rem; min-height: 8rem; }
+  .user { align-self: flex-end; background: #111827; color: #fff; padding: .5rem .75rem; border-radius: 12px; margin: 0; }
+  .assistant p { background: #f3f4f6; padding: .5rem .75rem; border-radius: 12px; margin: 0; white-space: pre-wrap; }
+  .step, .busy { color: #6b7280; font-size: 12px; display: block; }
+  .option { margin-right: .5rem; } .option.primary { background: #111827; color: #fff; }
+  .error { color: #b91c1c; } .chip { font-size: 12px; margin-right: .5rem; } .chip.failed { color: #b91c1c; }
+  form { display: flex; gap: .5rem; margin-top: 1rem; } form input:not([type]) { flex: 1; }
+</style>
+<div id="chat"></div>
+<script src="./main.js" type="module"></script>

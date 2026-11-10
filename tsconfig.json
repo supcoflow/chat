@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": [],
+    "paths": { "@supcoflow/chat/core": ["./src/core/index.ts"], "@supcoflow/chat/testing": ["./src/testing/index.ts"], "@supcoflow/chat/testing/server": ["./src/testing/server.ts"] }
+  },
+  // `conformance/` también (tsconfig propio, salvo `widget.test.ts` (el adaptador del widget) y `cobertura.test.ts` (lee archivos), que compilan acá con Preact). `examples/react` es un proyecto aparte (JSX de React; acá se compila con Preact): tiene su tsconfig y se tipa con `tsc -p packages/widget/examples/react`.
+  "include": ["src", "examples", "test-support", "build.mjs", "conformance/widget.test.ts", "conformance/cobertura.test.ts"],
+  "exclude": ["examples/react", "node_modules"]
+}

@@ -1,0 +1,69 @@
+{
+  "descripcion": "El tope de mensajes del día: un fallo HTTP se vuelve UN evento `error` no terminal, con el `motivo` del cuerpo como código (`tope_de_mensajes`). La conversación no se abrió (sin sesión) y lo que escribió el usuario nunca se pierde: queda a la vista.",
+  "acciones": [
+    {
+      "send": "hello"
+    }
+  ],
+  "respuestas": [
+    {
+      "http": 429,
+      "cuerpo": {
+        "ok": false,
+        "motivo": "tope_de_mensajes"
+      }
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "error",
+        "error": {
+          "code": "tope_de_mensajes",
+          "message": "HTTP 429",
+          "terminal": false
+        }
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": {
+        "code": "tope_de_mensajes",
+        "message": "HTTP 429",
+        "terminal": false
+      },
+      "activity": null,
+      "hasSession": false,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  // The conformance checks, their React adapter and the broken interface compile as a developer's project does: JSX of React and the entry points of the package as paths. The widget's own adapter
+  // (`widget.test.ts`) compiles with the widget's tsconfig (Preact), which includes it.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": [],
+    "paths": {
+      "@supcoflow/chat/core": ["../src/core/index.ts"],
+      "@supcoflow/chat/react": ["../src/react-hook/index.ts"],
+      "@supcoflow/chat/testing": ["../src/testing/index.ts"]
+    }
+  },
+  "include": ["checks.ts", "chat.conformance.template.tsx", "react-example.test.tsx", "broken-chat.tsx", "broken.test.tsx"]
+}

@@ -1,0 +1,179 @@
+{
+  "descripcion": "El tope diario de mensajes llega A MITAD de la charla: el segundo mensaje recibe `tope_de_mensajes` (HTTP 429), el error no es terminal y lo que la persona escribió se queda en la lista. La interfaz dice que el chat no está disponible por ahora y nunca ofrece un botón que pida más presupuesto (P9). Si la persona reintenta, el núcleo REENVÍA el mismo mensaje (el turno nunca corrió; recuperar no traería nada) y no lo duplica en la lista.",
+  "acciones": [
+    {
+      "send": "How do I export my data?"
+    },
+    {
+      "send": "And can I schedule it?"
+    },
+    {
+      "retry": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_D",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "How do I export my data?"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Open Settings > Data and press Export."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    },
+    {
+      "http": 429,
+      "cuerpo": {
+        "ok": false,
+        "motivo": "tope_de_mensajes"
+      }
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "And can I schedule it?"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Yes: open Schedules and pick a time."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 9
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "How do I export my data?"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_D",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "And can I schedule it?"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_D",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "And can I schedule it?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "How do I export my data?"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Open Settings > Data and press Export."
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      },
+      {
+        "type": "error",
+        "error": {
+          "code": "tope_de_mensajes",
+          "message": "HTTP 429",
+          "terminal": false
+        }
+      },
+      {
+        "type": "user_message",
+        "text": "And can I schedule it?"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Yes: open Schedules and pick a time."
+      },
+      {
+        "type": "turn_end",
+        "index": 9
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "How do I export my data?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Open Settings > Data and press Export.",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "And can I schedule it?",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "Yes: open Schedules and pick a time.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

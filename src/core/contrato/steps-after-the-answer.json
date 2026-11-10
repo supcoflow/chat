@@ -1,0 +1,131 @@
+{
+  "descripcion": "El modelo escribe y RECIÉN DESPUÉS anota la pregunta que la guía no cubre: el paso llega después de la respuesta y se pega a la última burbuja del asistente de ESE turno. Un paso sin respuesta a la que pegarse no cruza al turno siguiente.",
+  "acciones": [
+    {
+      "send": "Can I use dark mode?"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_F",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "Can I use dark mode?"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "The guide doesn't cover dark mode."
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "pregunta_anotada"
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "respondida"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 7
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "Can I use dark mode?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "Can I use dark mode?"
+      },
+      {
+        "type": "assistant_message",
+        "text": "The guide doesn't cover dark mode."
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "question_noted"
+        }
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "answered"
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 7
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "Can I use dark mode?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "The guide doesn't cover dark mode.",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "question_noted"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "role": "outcome",
+          "outcome": {
+            "kind": "answered"
+          }
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

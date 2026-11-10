@@ -1,0 +1,335 @@
+{
+  "descripcion": "Una respuesta va atada a la pregunta que el usuario VIO. El usuario rechaza el borrador A, el asistente arma el B, y el manejador del botón de A —que la interfaz dejó guardado— se dispara tarde: no manda NADA. Sólo la tarjeta vigente (B) aprueba (revisión 1 del núcleo, P1-1).",
+  "acciones": [
+    {
+      "send": "it is broken"
+    },
+    {
+      "reviseReport": true
+    },
+    {
+      "send": "corrected"
+    },
+    {
+      "confirmReport": "A"
+    },
+    {
+      "confirmReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_N",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "it is broken"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "A",
+          "kind": "tool-approval",
+          "prompt": "Draft A",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 3
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "A",
+          "outcome": "denied",
+          "optionId": "cancel"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "corrected"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "B",
+          "kind": "tool-approval",
+          "prompt": "Draft B",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 8
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "B",
+          "outcome": "approved",
+          "optionId": "approve"
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "reportado",
+          "reporte": "rep_B"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 12
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "it is broken"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_N",
+        "cuerpo": {
+          "indice": 3,
+          "respuesta": {
+            "requestId": "A",
+            "optionId": "cancel"
+          }
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_N",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "corrected"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_N",
+        "cuerpo": {
+          "indice": 8,
+          "respuesta": {
+            "requestId": "B",
+            "optionId": "approve"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "it is broken"
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "A",
+          "prompt": "Draft A",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 3
+      },
+      {
+        "type": "question_resolved",
+        "id": "A",
+        "outcome": "denied",
+        "optionId": "cancel"
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      },
+      {
+        "type": "user_message",
+        "text": "corrected"
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "B",
+          "prompt": "Draft B",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 8
+      },
+      {
+        "type": "question_resolved",
+        "id": "B",
+        "outcome": "approved",
+        "optionId": "approve"
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "reported",
+          "reportId": "rep_B"
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 12
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "it is broken",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Draft A",
+          "streaming": false,
+          "steps": [],
+          "reportCopy": true
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "No, I want to fix something",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "user",
+          "text": "corrected",
+          "pending": false
+        },
+        {
+          "id": 5,
+          "role": "assistant",
+          "text": "Draft B",
+          "streaming": false,
+          "steps": [],
+          "reportCopy": true
+        },
+        {
+          "id": 6,
+          "role": "user",
+          "text": "Yes, report it",
+          "pending": false
+        },
+        {
+          "id": 7,
+          "role": "outcome",
+          "outcome": {
+            "kind": "reported",
+            "reportId": "rep_B"
+          }
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": true,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

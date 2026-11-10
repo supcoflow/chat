@@ -1,0 +1,221 @@
+{
+  "descripcion": "La confirmación se contesta cuando ya no era la vigente (el usuario escribió algo en el medio): el servidor la rechaza con `confirmacion_no_vigente` + `espera`. El núcleo muestra el error; el reporte NO se envía.",
+  "acciones": [
+    {
+      "send": "The save button does nothing"
+    },
+    {
+      "confirmReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_A",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The save button does nothing"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "resumen_preparado"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_1",
+          "kind": "tool-approval",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false,
+          "reporte": {
+            "titulo": "The Save button on Settings > Profile does nothing",
+            "cuerpo": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 6
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "error",
+          "codigo": "confirmacion_no_vigente",
+          "mensaje": "This confirmation is no longer current.",
+          "terminal": false
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 6
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The save button does nothing"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_A",
+        "cuerpo": {
+          "indice": 6,
+          "respuesta": {
+            "requestId": "req_1",
+            "optionId": "approve"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The save button does nothing"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "report_summarized"
+        }
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_1",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false,
+          "report": {
+            "title": "The Save button on Settings > Profile does nothing",
+            "body": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 6
+      },
+      {
+        "type": "error",
+        "error": {
+          "code": "confirmacion_no_vigente",
+          "message": "This confirmation is no longer current.",
+          "terminal": false
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 6
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The save button does nothing",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "report_summarized"
+            }
+          ],
+          "reportCopy": true
+        }
+      ],
+      "pendingQuestion": {
+        "id": "req_1",
+        "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+        "kind": "report_confirmation",
+        "options": [
+          {
+            "id": "approve",
+            "label": "Yes, report it",
+            "style": "primary"
+          },
+          {
+            "id": "cancel",
+            "label": "No, I want to fix something",
+            "style": "default"
+          }
+        ],
+        "allowsText": false,
+        "report": {
+          "title": "The Save button on Settings > Profile does nothing",
+          "body": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+        }
+      },
+      "busy": false,
+      "error": {
+        "code": "confirmacion_no_vigente",
+        "message": "This confirmation is no longer current.",
+        "terminal": false
+      },
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

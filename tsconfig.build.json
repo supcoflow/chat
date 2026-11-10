@@ -1,0 +1,23 @@
+// Emite SOLO las declaraciones: el JS lo produce esbuild (build.mjs). Hasta la 1.x este
+// archivo emitía también el JS con tsc — ver el CHANGELOG 2.0.0 para el porqué del cambio.
+// Sigue excluyendo los tests, que importan vitest y no tienen por qué viajar al cliente.
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": ["dom", "dom.iterable", "es2023"],
+    "types": [],
+    // El hook de React importa el núcleo por su nombre público; las declaraciones lo dejan escrito así y acá se resuelve al fuente.
+    "paths": { "@supcoflow/chat/core": ["./src/core/index.ts"] },
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

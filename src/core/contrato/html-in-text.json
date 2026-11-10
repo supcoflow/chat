@@ -1,0 +1,116 @@
+{
+  "descripcion": "El texto del asistente con etiquetas HTML. El servidor cambió el `<` que podía abrir una etiqueta por `＜` (ancho completo): llega como texto. Una interfaz nunca inserta el texto del asistente como HTML (P4).",
+  "acciones": [
+    {
+      "send": "Show me how to embed it"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_H",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "Show me how to embed it"
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "Try ＜img src=x onerror=alert(1)> or ＜script>alert(1)＜/script> "
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "and then reload the page."
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Try ＜img src=x onerror=alert(1)> or ＜script>alert(1)＜/script> and then reload the page."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "Show me how to embed it"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "Show me how to embed it"
+      },
+      {
+        "type": "text_delta",
+        "delta": "Try ＜img src=x onerror=alert(1)> or ＜script>alert(1)＜/script> "
+      },
+      {
+        "type": "text_delta",
+        "delta": "and then reload the page."
+      },
+      {
+        "type": "assistant_message",
+        "text": "Try ＜img src=x onerror=alert(1)> or ＜script>alert(1)＜/script> and then reload the page."
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "Show me how to embed it",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Try ＜img src=x onerror=alert(1)> or ＜script>alert(1)＜/script> and then reload the page.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

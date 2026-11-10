@@ -1,0 +1,291 @@
+{
+  "descripcion": "Un backend ANTERIOR a la confirmación estructurada: la pregunta llega sin `reporte`. El núcleo la muestra igual (el `prompt` lo trae todo, pegado) y `pendingQuestion` no tiene `report`; confirmar funciona igual. El campo se agregó dentro de v1, así que un cliente nuevo contra un backend viejo es un caso real.",
+  "acciones": [
+    {
+      "send": "The save button does nothing"
+    },
+    {
+      "send": "On Settings > Profile"
+    },
+    {
+      "confirmReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_A",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The save button does nothing"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Which page are you on?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "On Settings > Profile"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "resumen_preparado"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_1",
+          "kind": "tool-approval",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 9
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "req_1",
+          "outcome": "approved",
+          "optionId": "approve"
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "reportado",
+          "reporte": "rep_3f9a1c2b7d4e5a60"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Done. Your report was sent."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 15
+        }
+      ]
+    }
+  ],
+  "disponibilidad": {
+    "cuerpo": {
+      "ok": true,
+      "motivo": null,
+      "marca": null
+    }
+  },
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The save button does nothing"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_A",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "On Settings > Profile"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_A",
+        "cuerpo": {
+          "indice": 9,
+          "respuesta": {
+            "requestId": "req_1",
+            "optionId": "approve"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The save button does nothing"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Which page are you on?"
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      },
+      {
+        "type": "user_message",
+        "text": "On Settings > Profile"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "report_summarized"
+        }
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_1",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 9
+      },
+      {
+        "type": "question_resolved",
+        "id": "req_1",
+        "outcome": "approved",
+        "optionId": "approve"
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "reported",
+          "reportId": "rep_3f9a1c2b7d4e5a60"
+        }
+      },
+      {
+        "type": "assistant_message",
+        "text": "Done. Your report was sent."
+      },
+      {
+        "type": "turn_end",
+        "index": 15
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The save button does nothing",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Which page are you on?",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "On Settings > Profile",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "report_summarized"
+            }
+          ],
+          "reportCopy": true
+        },
+        {
+          "id": 5,
+          "role": "user",
+          "text": "Yes, report it",
+          "pending": false
+        },
+        {
+          "id": 6,
+          "role": "outcome",
+          "outcome": {
+            "kind": "reported",
+            "reportId": "rep_3f9a1c2b7d4e5a60"
+          }
+        },
+        {
+          "id": 7,
+          "role": "assistant",
+          "text": "Done. Your report was sent.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": true,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

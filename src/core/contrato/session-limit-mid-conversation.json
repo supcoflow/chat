@@ -1,0 +1,147 @@
+{
+  "descripcion": "La conversación llega a su límite a mitad de la charla: el servidor manda el error terminal `limite_de_sesion` (nunca una pregunta que pida más presupuesto). La conversación termina, lo escrito queda a la vista y empezar otra es lo único que se ofrece (P9).",
+  "acciones": [
+    {
+      "send": "How do I export my data?"
+    },
+    {
+      "send": "And can I schedule it?"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_S",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "How do I export my data?"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Open Settings > Data and press Export."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "And can I schedule it?"
+        },
+        {
+          "v": 1,
+          "t": "error",
+          "codigo": "limite_de_sesion",
+          "mensaje": "The session reached its limit.",
+          "terminal": true
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "How do I export my data?"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_S",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "And can I schedule it?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "How do I export my data?"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Open Settings > Data and press Export."
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      },
+      {
+        "type": "user_message",
+        "text": "And can I schedule it?"
+      },
+      {
+        "type": "error",
+        "error": {
+          "code": "limite_de_sesion",
+          "message": "The session reached its limit.",
+          "terminal": true
+        }
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "How do I export my data?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Open Settings > Data and press Export.",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "And can I schedule it?",
+          "pending": false
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": {
+        "code": "limite_de_sesion",
+        "message": "The session reached its limit.",
+        "terminal": true
+      },
+      "activity": null,
+      "hasSession": false,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

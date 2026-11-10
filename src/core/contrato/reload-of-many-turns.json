@@ -1,0 +1,290 @@
+{
+  "descripcion": "La recarga de una charla de VARIOS turnos. El GET de recuperación trae los `espera` de los turnos históricos y sigue hasta la cola durable: el núcleo no puede tomar el primer borde por el final. Se reconstruyen los tres turnos, la confirmación del último sigue pendiente y el cursor queda en el índice del último borde (revisión 2, P1-1).",
+  "guardado": {
+    "id": "ses_L",
+    "indice": 9
+  },
+  "acciones": [
+    {
+      "esperarRebobinado": true
+    },
+    {
+      "confirmReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_L",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "first"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "First answer."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 3
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "second"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Second answer."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 6
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "third"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "resumen_preparado"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_now",
+          "kind": "tool-approval",
+          "prompt": "Current report",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 9
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "req_now",
+          "outcome": "approved",
+          "optionId": "approve"
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "reportado",
+          "reporte": "rep_L"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 13
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/sesion/ses_L/eventos?desde=0"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_L",
+        "cuerpo": {
+          "indice": 9,
+          "respuesta": {
+            "requestId": "req_now",
+            "optionId": "approve"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "first"
+      },
+      {
+        "type": "assistant_message",
+        "text": "First answer."
+      },
+      {
+        "type": "turn_end",
+        "index": 3
+      },
+      {
+        "type": "user_message",
+        "text": "second"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Second answer."
+      },
+      {
+        "type": "turn_end",
+        "index": 6
+      },
+      {
+        "type": "user_message",
+        "text": "third"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "report_summarized"
+        }
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_now",
+          "prompt": "Current report",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 9
+      },
+      {
+        "type": "question_resolved",
+        "id": "req_now",
+        "outcome": "approved",
+        "optionId": "approve"
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "reported",
+          "reportId": "rep_L"
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 13
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "first",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "First answer.",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "second",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "Second answer.",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 5,
+          "role": "user",
+          "text": "third",
+          "pending": false
+        },
+        {
+          "id": 6,
+          "role": "assistant",
+          "text": "Current report",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "report_summarized"
+            }
+          ],
+          "reportCopy": true
+        },
+        {
+          "id": 7,
+          "role": "user",
+          "text": "Yes, report it",
+          "pending": false
+        },
+        {
+          "id": 8,
+          "role": "outcome",
+          "outcome": {
+            "kind": "reported",
+            "reportId": "rep_L"
+          }
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": true,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

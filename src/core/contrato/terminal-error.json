@@ -1,0 +1,92 @@
+{
+  "descripcion": "Un error terminal (`terminal: true`) cierra la conversación: el cursor desaparece (`hasSession: false`), el error queda a la vista y no hay nada que reintentar; el próximo mensaje abriría otra conversación.",
+  "acciones": [
+    {
+      "send": "hello"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_C",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "hello"
+        },
+        {
+          "v": 1,
+          "t": "error",
+          "codigo": "limite_de_sesion",
+          "mensaje": "The session reached its limit.",
+          "terminal": true
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "hello"
+      },
+      {
+        "type": "error",
+        "error": {
+          "code": "limite_de_sesion",
+          "message": "The session reached its limit.",
+          "terminal": true
+        }
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": {
+        "code": "limite_de_sesion",
+        "message": "The session reached its limit.",
+        "terminal": true
+      },
+      "activity": null,
+      "hasSession": false,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

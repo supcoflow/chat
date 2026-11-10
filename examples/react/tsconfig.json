@@ -1,0 +1,16 @@
+{
+  // The React example is its own little project: JSX of React (the widget's tsconfig compiles with Preact) and the two entry points as a developer who installed the package sees them.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": [],
+    "paths": {
+      "@supcoflow/chat/core": ["../../src/core/index.ts"],
+      "@supcoflow/chat/react": ["../../src/react-hook/index.ts"]
+    }
+  },
+  "include": ["."]
+}

@@ -1,0 +1,160 @@
+{
+  "descripcion": "La conversación termina del lado del servidor (`fin`): no hay más cursor, los mensajes quedan a la vista para leerlos y el próximo mensaje abre otra conversación.",
+  "acciones": [
+    {
+      "send": "thanks, bye"
+    },
+    {
+      "send": "one more thing"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_H",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "thanks, bye"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "You're welcome!"
+        },
+        {
+          "v": 1,
+          "t": "fin"
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_I",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "one more thing"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Sure, tell me."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 3
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "thanks, bye"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "one more thing"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "thanks, bye"
+      },
+      {
+        "type": "assistant_message",
+        "text": "You're welcome!"
+      },
+      {
+        "type": "end"
+      },
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "one more thing"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Sure, tell me."
+      },
+      {
+        "type": "turn_end",
+        "index": 3
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "thanks, bye",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "You're welcome!",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "one more thing",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "Sure, tell me.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

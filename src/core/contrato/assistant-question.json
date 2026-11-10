@@ -1,0 +1,204 @@
+{
+  "descripcion": "Una pregunta del asistente (no la confirmación del reporte): tres opciones y, además, texto libre. Se contesta con el id de LA pregunta que se dibujó y con una de sus opciones (P7).",
+  "acciones": [
+    {
+      "send": "The export fails"
+    },
+    {
+      "answer": {
+        "optionId": "chrome"
+      }
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_Q",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The export fails"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_q1",
+          "kind": "question",
+          "prompt": "Which browser are you using?",
+          "opciones": [
+            {
+              "id": "chrome",
+              "label": "Chrome",
+              "style": "default"
+            },
+            {
+              "id": "safari",
+              "label": "Safari",
+              "style": "default"
+            },
+            {
+              "id": "firefox",
+              "label": "Firefox",
+              "style": "default"
+            }
+          ],
+          "libre": true
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 4
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "req_q1",
+          "outcome": "answered",
+          "optionId": "chrome"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Thanks. Does it fail with every file?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 8
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The export fails"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_Q",
+        "cuerpo": {
+          "indice": 4,
+          "respuesta": {
+            "requestId": "req_q1",
+            "optionId": "chrome"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The export fails"
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_q1",
+          "prompt": "Which browser are you using?",
+          "kind": "question",
+          "options": [
+            {
+              "id": "chrome",
+              "label": "Chrome",
+              "style": "default"
+            },
+            {
+              "id": "safari",
+              "label": "Safari",
+              "style": "default"
+            },
+            {
+              "id": "firefox",
+              "label": "Firefox",
+              "style": "default"
+            }
+          ],
+          "allowsText": true
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 4
+      },
+      {
+        "type": "question_resolved",
+        "id": "req_q1",
+        "outcome": "answered",
+        "optionId": "chrome"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Thanks. Does it fail with every file?"
+      },
+      {
+        "type": "turn_end",
+        "index": 8
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The export fails",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Which browser are you using?",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "Chrome",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "Thanks. Does it fail with every file?",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

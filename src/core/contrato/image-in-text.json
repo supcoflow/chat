@@ -1,0 +1,116 @@
+{
+  "descripcion": "El texto del asistente con una imagen de otro sitio. El servidor rompió la sintaxis (`］` de ancho completo en lugar de `]`): lo que llega es texto, no una imagen que el navegador vaya a pedir. Una interfaz nunca dibuja una imagen que viene del texto del asistente (P4).",
+  "acciones": [
+    {
+      "send": "What does the settings page look like?"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_I",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "What does the settings page look like?"
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "This is the page: ![the settings page］(https://other-site.example/settings.png) "
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "and that is all there is."
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "This is the page: ![the settings page］(https://other-site.example/settings.png) and that is all there is."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "What does the settings page look like?"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "What does the settings page look like?"
+      },
+      {
+        "type": "text_delta",
+        "delta": "This is the page: ![the settings page］(https://other-site.example/settings.png) "
+      },
+      {
+        "type": "text_delta",
+        "delta": "and that is all there is."
+      },
+      {
+        "type": "assistant_message",
+        "text": "This is the page: ![the settings page］(https://other-site.example/settings.png) and that is all there is."
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "What does the settings page look like?",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "This is the page: ![the settings page］(https://other-site.example/settings.png) and that is all there is.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

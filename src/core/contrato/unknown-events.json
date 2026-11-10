@@ -1,0 +1,142 @@
+{
+  "descripcion": "La regla de compatibilidad: dentro de v1 sólo se AGREGA. Un evento de un `t` que esta versión no conoce, un `paso` / `actividad` / `desenlace` con un `que` nuevo, campos de más y líneas que no son v1 se ignoran sin tumbar nada ni ensuciar el estado. `herramienta` (sólo del preview) tampoco se entrega a una interfaz ajena.",
+  "acciones": [
+    {
+      "send": "hello"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_E",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "hello"
+        },
+        {
+          "v": 1,
+          "t": "evento_de_un_v1_futuro",
+          "cualquier": "cosa"
+        },
+        {
+          "v": 1,
+          "t": "actividad",
+          "que": "actividad_futura"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "paso_futuro"
+        },
+        {
+          "v": 1,
+          "t": "herramienta",
+          "nombre": "orientar",
+          "resumen": "query: hello"
+        },
+        "esto no es una línea v1",
+        {
+          "v": 2,
+          "t": "texto",
+          "delta": "una línea de otro v"
+        },
+        {
+          "v": 1,
+          "t": "texto",
+          "delta": "Hi",
+          "campo_de_mas": true
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Hi there.",
+          "campo_de_mas": 1
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "desenlace_futuro"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 6,
+          "campo_de_mas": "x"
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "hello"
+      },
+      {
+        "type": "text_delta",
+        "delta": "Hi"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Hi there."
+      },
+      {
+        "type": "turn_end",
+        "index": 6
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Hi there.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

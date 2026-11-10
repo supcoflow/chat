@@ -1,0 +1,389 @@
+{
+  "descripcion": "El reporte con un adjunto que ya subió: el elemento señalado se sube cuando se abre la conversación, y al confirmar queda marcado como enviado con el reporte (`sentWithReport`). La confirmación tiene que decir qué adjuntos van con el reporte (P6) y, enviado, no se ofrecen más (P8, P10).",
+  "acciones": [
+    {
+      "pickElement": true
+    },
+    {
+      "send": "The save button does nothing"
+    },
+    {
+      "send": "On Settings > Profile"
+    },
+    {
+      "confirmReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_R",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The save button does nothing"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Which page are you on?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "On Settings > Profile"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "resumen_preparado"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_1",
+          "kind": "tool-approval",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false,
+          "reporte": {
+            "titulo": "The Save button on Settings > Profile does nothing",
+            "cuerpo": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 9
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "req_1",
+          "outcome": "approved",
+          "optionId": "approve"
+        },
+        {
+          "v": 1,
+          "t": "desenlace",
+          "que": "reportado",
+          "reporte": "rep_3f9a1c2b7d4e5a60"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Done. Your report was sent."
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 15
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The save button does nothing",
+          "contexto": {
+            "evidencia_elemento": "<button> \"Export\"; selector: button; path: button; style: display inline-block, position , ×; color , background , font \"Times New Roman\" 16px",
+            "evidencia_elemento_pagina": "http://localhost:3000/"
+          }
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/evidencias",
+        "cuerpo": {
+          "session_id": "ses_R",
+          "evidencia": {
+            "tipo": "elemento",
+            "contenido": {
+              "page": {
+                "sanitizedUrl": "http://localhost:3000/",
+                "title": "",
+                "viewportWidth": 1024,
+                "viewportHeight": 768,
+                "scrollX": 0,
+                "scrollY": 0,
+                "devicePixelRatio": 1,
+                "capturedAt": "2026-10-30T12:00:00.000Z"
+              },
+              "target": {
+                "tagName": "button",
+                "selector": "button",
+                "elementPath": "button",
+                "fullPath": "body > button",
+                "cssClasses": "",
+                "nearbyElements": [],
+                "selectedText": null,
+                "isFixed": false,
+                "textSnippet": "Export",
+                "htmlSnippet": "<button>Export</button>",
+                "attributes": {},
+                "accessibility": {
+                  "role": "button",
+                  "accessibleName": "Export",
+                  "ariaLabel": null,
+                  "ariaLabelledBy": null
+                },
+                "rectViewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0
+                },
+                "rectPage": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0
+                },
+                "computedStyles": {
+                  "display": "inline-block",
+                  "position": "",
+                  "width": "",
+                  "height": "",
+                  "margin": "",
+                  "padding": "",
+                  "color": "",
+                  "backgroundColor": "",
+                  "border": "",
+                  "borderRadius": "",
+                  "fontFamily": "\"Times New Roman\"",
+                  "fontSize": "16px",
+                  "fontWeight": "normal",
+                  "lineHeight": "normal",
+                  "textAlign": "",
+                  "zIndex": ""
+                }
+              },
+              "nearbyText": [],
+              "ancestorPath": [
+                "body"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_R",
+        "cuerpo": {
+          "indice": 5,
+          "mensaje": "On Settings > Profile",
+          "contexto": {
+            "evidencia_elemento": "<button> \"Export\"; selector: button; path: button; style: display inline-block, position , ×; color , background , font \"Times New Roman\" 16px",
+            "evidencia_elemento_pagina": "http://localhost:3000/"
+          }
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_R",
+        "cuerpo": {
+          "indice": 9,
+          "respuesta": {
+            "requestId": "req_1",
+            "optionId": "approve"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The save button does nothing"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Which page are you on?"
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      },
+      {
+        "type": "user_message",
+        "text": "On Settings > Profile"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "report_summarized"
+        }
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_1",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false,
+          "report": {
+            "title": "The Save button on Settings > Profile does nothing",
+            "body": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 9
+      },
+      {
+        "type": "question_resolved",
+        "id": "req_1",
+        "outcome": "approved",
+        "optionId": "approve"
+      },
+      {
+        "type": "outcome",
+        "outcome": {
+          "kind": "reported",
+          "reportId": "rep_3f9a1c2b7d4e5a60"
+        }
+      },
+      {
+        "type": "assistant_message",
+        "text": "Done. Your report was sent."
+      },
+      {
+        "type": "turn_end",
+        "index": 15
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The save button does nothing",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Which page are you on?",
+          "streaming": false,
+          "steps": []
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "On Settings > Profile",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "report_summarized"
+            }
+          ],
+          "reportCopy": true
+        },
+        {
+          "id": 5,
+          "role": "user",
+          "text": "Yes, report it",
+          "pending": false
+        },
+        {
+          "id": 6,
+          "role": "outcome",
+          "outcome": {
+            "kind": "reported",
+            "reportId": "rep_3f9a1c2b7d4e5a60"
+          }
+        },
+        {
+          "id": 7,
+          "role": "assistant",
+          "text": "Done. Your report was sent.",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": true,
+      "attachments": [
+        {
+          "id": 1,
+          "kind": "element",
+          "label": "button «Export»",
+          "thumbnail": null,
+          "status": "uploaded",
+          "failure": null,
+          "retryable": true,
+          "sentWithReport": true
+        }
+      ],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

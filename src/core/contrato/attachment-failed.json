@@ -1,0 +1,200 @@
+{
+  "descripcion": "La subida de un adjunto es rechazada (`tope_de_evidencias`, HTTP 429): el adjunto queda `failed`, sin reintento posible (`retryable: false`), y la charla sigue. Una interfaz muestra el estado de cada adjunto y no ofrece reintentar lo que no tiene arreglo (P10).",
+  "acciones": [
+    {
+      "pickElement": true
+    },
+    {
+      "send": "The export button fails"
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_E",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The export button fails"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Thanks. Which page are you on?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 5
+        }
+      ]
+    }
+  ],
+  "evidencias": [
+    {
+      "http": 429,
+      "cuerpo": {
+        "ok": false,
+        "motivo": "tope_de_evidencias"
+      }
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The export button fails",
+          "contexto": {
+            "evidencia_elemento": "<button> \"Export\"; selector: button; path: button; style: display inline-block, position , ×; color , background , font \"Times New Roman\" 16px",
+            "evidencia_elemento_pagina": "http://localhost:3000/"
+          }
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/evidencias",
+        "cuerpo": {
+          "session_id": "ses_E",
+          "evidencia": {
+            "tipo": "elemento",
+            "contenido": {
+              "page": {
+                "sanitizedUrl": "http://localhost:3000/",
+                "title": "",
+                "viewportWidth": 1024,
+                "viewportHeight": 768,
+                "scrollX": 0,
+                "scrollY": 0,
+                "devicePixelRatio": 1,
+                "capturedAt": "2026-10-30T12:00:00.000Z"
+              },
+              "target": {
+                "tagName": "button",
+                "selector": "button",
+                "elementPath": "button",
+                "fullPath": "body > button",
+                "cssClasses": "",
+                "nearbyElements": [],
+                "selectedText": null,
+                "isFixed": false,
+                "textSnippet": "Export",
+                "htmlSnippet": "<button>Export</button>",
+                "attributes": {},
+                "accessibility": {
+                  "role": "button",
+                  "accessibleName": "Export",
+                  "ariaLabel": null,
+                  "ariaLabelledBy": null
+                },
+                "rectViewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0
+                },
+                "rectPage": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0
+                },
+                "computedStyles": {
+                  "display": "inline-block",
+                  "position": "",
+                  "width": "",
+                  "height": "",
+                  "margin": "",
+                  "padding": "",
+                  "color": "",
+                  "backgroundColor": "",
+                  "border": "",
+                  "borderRadius": "",
+                  "fontFamily": "\"Times New Roman\"",
+                  "fontSize": "16px",
+                  "fontWeight": "normal",
+                  "lineHeight": "normal",
+                  "textAlign": "",
+                  "zIndex": ""
+                }
+              },
+              "nearbyText": [],
+              "ancestorPath": [
+                "body"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The export button fails"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Thanks. Which page are you on?"
+      },
+      {
+        "type": "turn_end",
+        "index": 5
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The export button fails",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "Thanks. Which page are you on?",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [
+        {
+          "id": 1,
+          "kind": "element",
+          "label": "button «Export»",
+          "thumbnail": null,
+          "status": "failed",
+          "failure": "tope_de_evidencias",
+          "retryable": false,
+          "sentWithReport": false
+        }
+      ],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+/* Vive adentro del shadow root: `:host` es el div que montarChat crea. Sin webfonts, sin
+   librerías. Las variables --scf-* las escribe variablesDelTema() en el style del host: las seis
+   del tema más `--scf-sobre-acento`, calculada (2.2.0).
+
+   Las SUPERFICIES se derivan con color-mix() y no son knobs: un `fondo` oscuro las vuelve oscuras
+   solas. Un navegador sin color-mix (antes de 2023) ve burbujas del color del fondo: feo, legible. */
+:host {
+  all: initial;
+  font-family: var(--scf-fuente);
+  color: var(--scf-texto);
+  --scf-superficie: color-mix(in srgb, var(--scf-texto) 5%, var(--scf-fondo));
+  --scf-superficie-2: color-mix(in srgb, var(--scf-texto) 9%, var(--scf-fondo));
+  --scf-linea: color-mix(in srgb, var(--scf-texto) 11%, var(--scf-fondo));
+  --scf-tinte: color-mix(in srgb, var(--scf-acento) 9%, var(--scf-fondo));
+  --scf-tinte-2: color-mix(in srgb, var(--scf-acento) 16%, var(--scf-fondo));
+  --scf-error: #c2410c;
+}
+*, *::before, *::after { box-sizing: border-box; }
+button { font: inherit; cursor: pointer; }
+svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* La burbuja flotante */
+.scf-burbuja { position: fixed; right: 20px; bottom: 20px; z-index: 2147483000; width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--scf-acento); color: var(--scf-sobre-acento); box-shadow: 0 10px 30px -6px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.05); display: grid; place-items: center; transition: transform .18s ease; }
+.scf-burbuja:hover { transform: scale(1.05); }
+.scf-burbuja--izquierda { right: auto; left: 20px; }
+.scf-burbuja svg { width: 26px; height: 26px; }
+
+/* El panel */
+.scf-panel { position: fixed; right: 20px; bottom: 88px; z-index: 2147483000; width: 380px; height: 620px; max-height: calc(100vh - 100px); display: flex; flex-direction: column; overflow: hidden; background: var(--scf-fondo); color: var(--scf-texto); border-radius: var(--scf-radio); box-shadow: 0 30px 70px -18px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.06); font-size: 14px; line-height: 1.5; }
+.scf-panel--izquierda { right: auto; left: 20px; }
+/* En inline el alto es del CONTENEDOR si lo dice (`--scf-alto`, una custom property: cruza el
+   shadow root porque `all: initial` no las resetea) y 560px si no. Lo pide el preview de la consola
+   de Supcoflow, que desde el 2026-09-12 monta el widget en inline a todo el alto de su columna en
+   vez de flotarlo sobre un sitio de mentira. Un sitio que no declare nada ve exactamente lo de antes. */
+.scf-panel--inline { position: static; width: 100%; height: var(--scf-alto, 560px); box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+@media (max-width: 480px) {
+  .scf-panel:not(.scf-panel--inline) { inset: 0; width: auto; height: auto; max-height: none; border-radius: 0; }
+}
+
+/* Cabecera: clara y compacta; el acento ya no pinta un bloque */
+.scf-cabecera { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--scf-linea); flex: none; }
+.scf-cabecera--inicio { border-bottom-color: transparent; padding-bottom: 0; }
+.scf-cabecera-titulo { flex: 1; min-width: 0; line-height: 1.25; }
+.scf-cabecera-titulo b { display: block; font-weight: 600; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scf-cabecera-titulo small { display: block; color: var(--scf-texto-suave); font-size: 12px; }
+.scf-rotulo { flex: none; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--scf-tinte); color: var(--scf-acento); }
+.scf-icono { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; color: var(--scf-texto-suave); display: grid; place-items: center; flex: none; padding: 0; }
+.scf-icono:hover:not(:disabled) { background: var(--scf-superficie); color: var(--scf-texto); }
+.scf-icono:disabled { opacity: .45; cursor: default; }
+.scf-icono svg { width: 18px; height: 18px; }
+.scf-avatar { width: 34px; height: 34px; border-radius: 10px; flex: none; background: var(--scf-tinte-2); color: var(--scf-acento); display: grid; place-items: center; font-weight: 700; font-size: 13px; overflow: hidden; }
+.scf-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scf-avatar--grande { width: 44px; height: 44px; border-radius: 12px; font-size: 16px; }
+
+/* Pantalla de inicio */
+.scf-inicio { flex: 1; display: flex; flex-direction: column; padding: 8px 22px 16px; gap: 18px; background: linear-gradient(180deg, var(--scf-tinte) 0%, var(--scf-fondo) 58%); overflow-y: auto; }
+.scf-inicio-saludo h3 { margin: 12px 0 4px; font-size: 24px; font-weight: 600; letter-spacing: -.01em; line-height: 1.15; }
+.scf-inicio-saludo p { margin: 0; color: var(--scf-texto-suave); font-size: 15px; }
+.scf-arranques { display: flex; flex-direction: column; gap: 8px; }
+.scf-arranque { display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--scf-linea); background: var(--scf-fondo); color: inherit; }
+.scf-arranque:hover { border-color: var(--scf-acento); background: var(--scf-tinte); }
+.scf-arranque-ic { width: 34px; height: 34px; border-radius: 10px; background: var(--scf-superficie); display: grid; place-items: center; flex: none; color: var(--scf-texto); }
+.scf-arranque-ic svg { width: 18px; height: 18px; stroke-width: 1.8; }
+.scf-arranque-texto { min-width: 0; }
+.scf-arranque-texto b { display: block; font-weight: 600; font-size: 14px; }
+.scf-arranque-texto small { display: block; color: var(--scf-texto-suave); font-size: 12.5px; }
+.scf-arranque-chev { margin-left: auto; color: var(--scf-texto-suave); }
+.scf-arranque-chev svg { width: 16px; height: 16px; }
+.scf-o { display: flex; align-items: center; gap: 10px; color: var(--scf-texto-suave); font-size: 12px; margin-top: auto; }
+.scf-o::before, .scf-o::after { content: ""; flex: 1; height: 1px; background: var(--scf-linea); }
+
+/* Mensajes: grupos con avatar */
+.scf-mensajes { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 14px; }
+.scf-grupo { display: flex; gap: 8px; max-width: 88%; }
+.scf-grupo--asistente { align-self: flex-start; }
+.scf-grupo--usuario { align-self: flex-end; }
+.scf-grupo .scf-avatar { width: 24px; height: 24px; border-radius: 8px; font-size: 10px; align-self: flex-end; }
+.scf-grupo-cuerpo { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.scf-grupo--usuario .scf-grupo-cuerpo { align-items: flex-end; }
+.scf-msg { padding: 10px 14px; border-radius: 18px; overflow-wrap: anywhere; }
+.scf-msg--asistente { background: var(--scf-superficie); }
+.scf-grupo--asistente .scf-msg:last-child { border-bottom-left-radius: 6px; }
+.scf-msg--usuario { background: var(--scf-acento); color: var(--scf-sobre-acento); }
+.scf-grupo--usuario .scf-msg:last-child { border-bottom-right-radius: 6px; }
+.scf-msg p { margin: 0 0 6px; } .scf-msg p:last-child { margin-bottom: 0; }
+.scf-msg .scf-plano { white-space: pre-wrap; }
+.scf-msg ul, .scf-msg ol { margin: 4px 0; padding-left: 18px; }
+.scf-msg code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--scf-superficie-2); padding: 1px 5px; border-radius: 5px; }
+.scf-msg--usuario code { background: color-mix(in srgb, var(--scf-sobre-acento) 18%, transparent); }
+/* Un pegado largo, colapsado (`isLongPaste`): la marca, cuánto es y, al tocarla, el texto completo. */
+.scf-pegado-boton { all: unset; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; cursor: pointer; max-width: 100%; }
+.scf-pegado-boton:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 6px; }
+.scf-pegado-marca { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.scf-pegado-medida { font-size: 12px; opacity: .8; }
+.scf-pegados { list-style: none; margin: 0; padding: 0 0 6px; display: flex; flex-direction: column; gap: 4px; }
+.scf-pegados .scf-pegado { padding: 6px 8px; border-radius: 10px; background: var(--scf-superficie-2); }
+.scf-pegado-primera { flex-basis: 100%; font-size: 12px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scf-pegado-texto { margin: 8px 0 0; max-height: 240px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.scf-codigo { margin: 6px 0; padding: 8px 10px; border-radius: 10px; background: var(--scf-superficie-2); overflow-x: auto; white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.scf-msg a { color: inherit; text-decoration: underline; }
+/* El indicador de trabajo: «Thinking…» (o «Reading the support guide…») con un brillo que pasa, mientras el agente no escribió. */
+.scf-pensando { display: inline-block; color: var(--scf-texto-suave); font-size: 13px; }
+/* El brillo sólo donde el navegador sabe recortar el fondo al texto: si no, queda el texto liso y visible (nunca transparente). */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .scf-pensando { color: transparent; background-image: linear-gradient(90deg, var(--scf-texto-suave) 0 35%, var(--scf-texto) 50%, var(--scf-texto-suave) 65% 100%); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; animation: scf-brillo 1.6s linear infinite; }
+}
+@keyframes scf-brillo { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .scf-pensando { animation: none; color: var(--scf-texto-suave); background-image: none; } .scf-burbuja, .scf-enviar { transition: none; } }
+
+/* Los pasos que el agente dio, sobre la respuesta que sigue: una línea chica cada uno, sin caja. */
+.scf-pasos { list-style: none; margin: 0 0 4px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+.scf-paso { display: flex; align-items: center; gap: 5px; color: var(--scf-texto-suave); font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.scf-paso svg { width: 12px; height: 12px; flex: none; }
+
+/* La pregunta de confirmación y el error, sangrados al ancho del avatar */
+.scf-pregunta { align-self: stretch; display: flex; flex-direction: column; gap: 8px; padding-left: 32px; }
+.scf-pregunta-nota { margin: 0; color: var(--scf-texto-suave); font-size: 12.5px; }
+.scf-pregunta-opciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.scf-opcion { border: 1px solid var(--scf-linea); background: var(--scf-fondo); color: var(--scf-texto); border-radius: 999px; padding: 7px 14px; font-size: 13.5px; font-weight: 500; }
+.scf-opcion--primary { background: var(--scf-acento); color: var(--scf-sobre-acento); border-color: var(--scf-acento); }
+.scf-opcion--danger { color: var(--scf-error); border-color: color-mix(in srgb, var(--scf-error) 40%, transparent); }
+.scf-opcion:disabled { opacity: .5; cursor: default; }
+.scf-pregunta-libre { display: flex; gap: 8px; align-items: center; }
+.scf-pregunta-libre .scf-textarea { border: 1px solid var(--scf-linea); border-radius: 12px; padding: 8px 12px; }
+/* `.scf-enviar` es un círculo de ícono desde la 2.2.0 (ver más abajo): acá lleva texto
+   ("Responder"), así que se vuelve pastilla sólo en este contexto (revisión final de la rama,
+   2026-09-11). El foco del input también se restaura acá: no está adentro de `.scf-caja`, que es
+   quien normalmente lo pinta con `:focus-within`. */
+.scf-pregunta-libre .scf-enviar { width: auto; height: 32px; padding: 0 14px; border-radius: 999px; }
+.scf-pregunta-libre .scf-textarea:focus { outline: 2px solid var(--scf-acento); outline-offset: 1px; }
+.scf-error { display: flex; align-items: center; gap: 10px; margin-left: 32px; padding: 9px 12px; border-radius: 12px; background: color-mix(in srgb, var(--scf-error) 8%, var(--scf-fondo)); color: var(--scf-error); font-size: 13px; }
+.scf-error svg { width: 16px; height: 16px; flex: none; }
+.scf-error span { flex: 1; }
+.scf-error button { border: 0; background: transparent; color: inherit; font-weight: 600; padding: 4px 6px; border-radius: 6px; }
+.scf-error button:hover { background: color-mix(in srgb, var(--scf-error) 12%, transparent); }
+
+/* 2.3.0: lo que el agente está haciendo (H12) y el desenlace del camino (H10, H11). Fijos del widget. */
+.scf-desenlace { align-self: stretch; padding-left: 32px; }
+.scf-tarjeta { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--scf-linea); background: var(--scf-tinte); }
+.scf-tarjeta svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--scf-acento); }
+.scf-tarjeta b { display: block; font-size: 13.5px; font-weight: 600; }
+.scf-tarjeta small { display: block; margin-top: 2px; color: var(--scf-texto-suave); font-size: 12.5px; }
+.scf-nueva { margin-top: 8px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--scf-linea); background: transparent; color: var(--scf-acento); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.scf-nueva:hover { background: var(--scf-tinte); }
+.scf-tarjeta code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; user-select: all; }
+.scf-chip-desenlace { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--scf-superficie); color: var(--scf-texto-suave); font-size: 12.5px; font-weight: 500; }
+.scf-chip-desenlace svg { width: 13px; height: 13px; }
+
+/* Compositor: una sola caja, herramientas adentro, enviar circular */
+.scf-pie { padding: 8px 12px 10px; flex: none; }
+.scf-compositor { margin: 0; }
+.scf-caja { border: 1px solid var(--scf-linea); border-radius: 16px; background: var(--scf-fondo); padding: 8px 8px 6px 10px; display: flex; flex-direction: column; gap: 6px; transition: border-color .15s, box-shadow .15s; position: relative; }
+.scf-caja:focus-within { border-color: var(--scf-acento); box-shadow: 0 0 0 3px var(--scf-tinte); }
+.scf-textarea { width: 100%; border: 0; outline: 0; resize: none; background: transparent; font: inherit; color: inherit; padding: 4px 2px; min-height: 24px; max-height: 96px; line-height: 1.45; }
+.scf-textarea::placeholder { color: var(--scf-texto-suave); }
+.scf-fila { display: flex; align-items: center; gap: 2px; position: relative; }
+.scf-fila .scf-icono { width: 30px; height: 30px; }
+.scf-fila .scf-icono svg { width: 17px; height: 17px; }
+.scf-enviar { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; background: var(--scf-acento); color: var(--scf-sobre-acento); display: grid; place-items: center; transition: transform .12s; }
+.scf-enviar:hover:not(:disabled) { transform: scale(1.06); }
+.scf-enviar:disabled { background: var(--scf-superficie-2); color: var(--scf-texto-suave); cursor: default; }
+.scf-enviar svg { width: 16px; height: 16px; stroke-width: 2.4; }
+.scf-menu { position: absolute; left: 0; bottom: 36px; background: var(--scf-fondo); border: 1px solid var(--scf-linea); border-radius: 12px; box-shadow: 0 10px 30px -8px rgba(0,0,0,.25); padding: 4px; display: flex; flex-direction: column; min-width: 180px; z-index: 1; }
+.scf-menu button { border: 0; background: transparent; color: inherit; text-align: left; padding: 8px 10px; border-radius: 8px; font-size: 13px; }
+.scf-menu button:hover { background: var(--scf-superficie); }
+.scf-marca { margin: 8px 0 0; text-align: center; font-size: 11px; color: var(--scf-texto-suave); }
+.scf-marca b { font-weight: 600; color: var(--scf-texto-suave); }
+
+/* Adjuntos: miniaturas con estado como punto, chips para el elemento */
+.scf-adjuntos { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 2px 4px; align-items: center; }
+.scf-adjunto { position: relative; }
+.scf-tile { width: 52px; height: 52px; border-radius: 10px; overflow: hidden; border: 1px solid var(--scf-linea); display: block; }
+.scf-adjunto--fallo.scf-tile { border-color: color-mix(in srgb, var(--scf-error) 50%, transparent); }
+.scf-miniatura { width: 100%; height: 100%; object-fit: cover; display: block; }
+.scf-tile-estado { position: absolute; right: 4px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--scf-fondo); display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.scf-tile-estado svg { width: 10px; height: 10px; stroke-width: 2.5; }
+.scf-tile-estado--listo { color: #15803d; }
+.scf-tile-estado--fallo { color: var(--scf-error); }
+.scf-tile-estado--pendiente::after, .scf-tile-estado--subiendo::after { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--scf-texto-suave); border-top-color: transparent; }
+.scf-tile-estado--subiendo::after { animation: scf-gira .8s linear infinite; }
+@keyframes scf-gira { to { transform: rotate(360deg); } }
+.scf-tile-quitar { position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; border: 0; padding: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; line-height: 1; display: grid; place-items: center; }
+.scf-tile-quitar:disabled { opacity: .4; cursor: default; }
+.scf-tile-reintentar { position: absolute; left: 0; right: 0; bottom: 0; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 10px; padding: 2px 0; }
+.scf-chip { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 8px; border-radius: 999px; background: var(--scf-tinte); color: var(--scf-acento); font-size: 12.5px; font-weight: 500; max-width: 220px; border: 0; }
+.scf-adjunto--fallo.scf-chip { background: color-mix(in srgb, var(--scf-error) 10%, var(--scf-fondo)); color: var(--scf-error); }
+.scf-chip svg { width: 14px; height: 14px; flex: none; }
+.scf-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scf-chip button { border: 0; background: transparent; color: inherit; padding: 0 0 0 2px; font-size: 14px; line-height: 1; opacity: .7; }
+.scf-chip button:hover:not(:disabled) { opacity: 1; }
+.scf-chip--accion { background: var(--scf-superficie); color: var(--scf-texto); cursor: pointer; }
+.scf-chip--accion:hover:not(:disabled) { background: var(--scf-superficie-2); }
+.scf-chip--accion:disabled { opacity: .5; cursor: default; }
+.scf-aviso { font-size: 12px; color: var(--scf-texto-suave); padding: 0 2px 4px; }
+.scf-oculto { display: none; }

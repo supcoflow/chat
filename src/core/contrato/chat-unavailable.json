@@ -1,0 +1,42 @@
+{
+  "descripcion": "El chat de este proyecto está apagado para este origen: `GET /api/chat/estado` contesta 403 `chat_deshabilitado`. La interfaz no ofrece el chat, o lo muestra deshabilitado (P1).",
+  "acciones": [
+    {
+      "checkAvailability": true
+    }
+  ],
+  "respuestas": [],
+  "disponibilidad": {
+    "status": 403,
+    "cuerpo": {
+      "ok": false,
+      "motivo": "chat_deshabilitado",
+      "marca": null
+    }
+  },
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      }
+    ],
+    "eventos": [],
+    "estado": {
+      "messages": [],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": false,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "descripcion": "Con la confirmación pendiente el usuario elige «No, I want to fix something»: reviseReport contesta `cancel`, nada se reporta y el asistente sigue la charla.",
+  "acciones": [
+    {
+      "send": "The save button does nothing"
+    },
+    {
+      "reviseReport": true
+    }
+  ],
+  "respuestas": [
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "sesion",
+          "id": "ses_A",
+          "indice": 0
+        },
+        {
+          "v": 1,
+          "t": "usuario",
+          "texto": "The save button does nothing"
+        },
+        {
+          "v": 1,
+          "t": "paso",
+          "que": "resumen_preparado"
+        },
+        {
+          "v": 1,
+          "t": "pregunta",
+          "requestId": "req_1",
+          "kind": "tool-approval",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "opciones": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "libre": false,
+          "reporte": {
+            "titulo": "The Save button on Settings > Profile does nothing",
+            "cuerpo": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 6
+        }
+      ]
+    },
+    {
+      "stream": [
+        {
+          "v": 1,
+          "t": "pregunta_resuelta",
+          "requestId": "req_1",
+          "outcome": "denied",
+          "optionId": "cancel"
+        },
+        {
+          "v": 1,
+          "t": "asistente",
+          "texto": "Sure, what would you like to change?"
+        },
+        {
+          "v": 1,
+          "t": "espera",
+          "indice": 10
+        }
+      ]
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "The save button does nothing"
+        }
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion/ses_A",
+        "cuerpo": {
+          "indice": 6,
+          "respuesta": {
+            "requestId": "req_1",
+            "optionId": "cancel"
+          }
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "session",
+        "index": 0
+      },
+      {
+        "type": "user_message",
+        "text": "The save button does nothing"
+      },
+      {
+        "type": "step",
+        "step": {
+          "kind": "report_summarized"
+        }
+      },
+      {
+        "type": "question",
+        "question": {
+          "id": "req_1",
+          "prompt": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "kind": "report_confirmation",
+          "options": [
+            {
+              "id": "approve",
+              "label": "Yes, report it",
+              "style": "primary"
+            },
+            {
+              "id": "cancel",
+              "label": "No, I want to fix something",
+              "style": "default"
+            }
+          ],
+          "allowsText": false,
+          "report": {
+            "title": "The Save button on Settings > Profile does nothing",
+            "body": "What happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages."
+          }
+        }
+      },
+      {
+        "type": "turn_end",
+        "index": 6
+      },
+      {
+        "type": "question_resolved",
+        "id": "req_1",
+        "outcome": "denied",
+        "optionId": "cancel"
+      },
+      {
+        "type": "assistant_message",
+        "text": "Sure, what would you like to change?"
+      },
+      {
+        "type": "turn_end",
+        "index": 10
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "The save button does nothing",
+          "pending": false
+        },
+        {
+          "id": 2,
+          "role": "assistant",
+          "text": "This is what I'll send to the team:\n\nThe Save button on Settings > Profile does nothing\n\nWhat happened: clicking Save on Settings > Profile shows no message and nothing is stored.\nExpected: the profile is saved and a confirmation appears.\nWhat is not known: whether it happens on other pages.\n\nShall I send it?",
+          "streaming": false,
+          "steps": [
+            {
+              "kind": "report_summarized"
+            }
+          ],
+          "reportCopy": true
+        },
+        {
+          "id": 3,
+          "role": "user",
+          "text": "No, I want to fix something",
+          "pending": false
+        },
+        {
+          "id": 4,
+          "role": "assistant",
+          "text": "Sure, what would you like to change?",
+          "streaming": false,
+          "steps": []
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": null,
+      "activity": null,
+      "hasSession": true,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}
