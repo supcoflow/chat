@@ -224,7 +224,7 @@ of a pointed element). The core also **honours it by itself**: with a `false` it
 ## Errors
 
 `state.error` is `{ code, message, terminal }`. `terminal: false` → show a "retry" and call `retry()`. `terminal: true` → the conversation is over (`hasSession` is `false`); the next `send`
-opens another. Decide what to show by `code`: the list is in [`protocol-v1.md`](./protocol-v1.md#error-codes). `message` is not for your users. An attachment upload that fails sets
+opens another. Decide what to show by `code`: the list is in [`protocol-v1.md`](./protocol-v1.md#error-codes). `message` is not for your users, with one exception: for `ia_no_disponible` and `ia_sin_configurar` it carries the sentence of the cause (wait and try again, or tell the site's team), written by the backend in the language of the app and meant to be shown. Draw it as **text**, never as HTML, and only if it is short (the widget keeps up to 200 characters, after stripping control characters and `<` / `>`); if it is missing or longer, show your own neutral "the assistant is not available" sentence. Do not offer "retry" for those two: the fix is the site's (key, balance, configuration) and the conversation goes on. An attachment upload that fails sets
 `failure` on that attachment (for example `tope_de_evidencias`), not `state.error`.
 
 ## Known limits

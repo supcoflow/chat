@@ -7,7 +7,7 @@ import { ENCABEZADOS_DEL_CHAT } from "../contrato-del-chat";
 export const ENCABEZADO_SDK = ENCABEZADOS_DEL_CHAT.sdk;
 
 /** Mantener igual a `version` de `package.json` (lo exige `version.test.ts`). */
-export const SDK_VERSION = "2.4.0";
+export const SDK_VERSION = "2.5.0";
 
 /** La huella del build con que se construyó esta salida (`huella-del-build.mjs`: fuente, configuración y dependencias bloqueadas), que `build.mjs` inyecta con `define`. En el fuente y en los tests no está definida: la etiqueta es la versión a secas. */
 declare const __SDK_BUILD__: string | undefined;

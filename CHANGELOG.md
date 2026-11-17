@@ -1,5 +1,12 @@
 # @supcoflow/chat changelog
 
+## 2.5.0 — 2026-11-15
+
+- **Widget: «Scroll to the latest message» button.** When the person scrolls up to read, a round button with a down arrow appears over the bottom of the message list; it gets a small dot if something arrived below in the meantime. Pressing it (or Enter/Space on it: it is a real `<button>`, reachable with Tab) scrolls to the bottom and clears the dot. It only mirrors the list's existing «stuck to the bottom» state: when the list follows the conversation, how it follows and when it lets go are unchanged. The list is now `role="log"` (keeping `aria-live="polite"`). Two new fixed texts, `bajarAlUltimo` («Scroll to the latest message») and `hayNuevo` («New messages below»), and a `.scf-lista` wrapper around `.scf-mensajes` (inside the shadow DOM). Interfaces built on `@supcoflow/chat/core` or `/react` are not affected.
+- New error code `demasiadas_solicitudes` (HTTP 429 with `Retry-After`): the backend now rate-limits opening a session, sending a message and uploading evidence per IP and per conversation. The widget shows «Too many messages in a row. Wait a few minutes and try again.» and keeps what the person wrote. Unknown codes already fell back to a generic error, so older widgets keep working.
+- Test bench: new scenario `too-many-requests` (the 429 `demasiadas_solicitudes` on the first message, P3 and P9), so an interface of your own can see that state without a real backend. It is the 27th scenario.
+- Docs: `docs/core.md` no longer says that `message` is never for your users: for `ia_no_disponible` and `ia_sin_configurar` it carries the sentence of the cause, meant to be shown as text.
+
 ## 2.4.0 — 2026-11-09
 
 Additive within protocol v1: one new event, `paso`. Two fixed texts change (the report card) and new ones are added
@@ -103,6 +110,9 @@ Additive within protocol v1: one new event, `paso`. Two fixed texts change (the 
   (`pending: false`) although the server had never seen it. Now it sends the SAME message (or answer) again, without repeating it in `messages`; if it is refused again, the next `retry()` sends it again.
   After a network cut or a `5xx` with no reason (a gateway: the request may have arrived) it still recovers, as before. The widget and `@supcoflow/chat/core` behave the same, and
   `daily-cap-mid-conversation` of the test bench now plays the retry. No protocol change: the client marks the refusals it made up itself (a field that only lives in the browser).
+- **When the assistant's AI is unavailable, the widget says what to do.** For `ia_no_disponible` / `ia_sin_configurar` the widget now shows the short phrase the backend sends for that cause, in the app's language
+  (wait a minute, try again, or let the site's team know), drawn as plain text and capped at 200 characters; it never names a key, balance, account, provider or model. Without a phrase (an older backend, or an HTTP refusal
+  made up by the client) it keeps the neutral «The assistant isn't available right now…».
 
 **Fixed**
 - **The message list now follows the conversation to the bottom, even when a lot arrives at once.** It used to scroll down by itself only if what was added was shorter than 80 px, measured after the change. Since the

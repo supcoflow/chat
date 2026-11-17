@@ -315,3 +315,70 @@ describe("el panel cambia de alto sin que la persona toque la lista", () => {
     expect(escondido()).toBe(0);
   });
 });
+
+// «Bajar a lo último» (2.5.0): el botón sólo MIRA el estado `pegada`; no cambia cuándo la lista sigue al final (los bloques de arriba lo siguen probando).
+describe("el botón «bajar a lo último»", () => {
+  const boton = (): HTMLButtonElement | null => cont.querySelector<HTMLButtonElement>(".scf-bajar");
+  const punto = (): Element | null => cont.querySelector(".scf-bajar-punto");
+  async function leyendoArriba(): Promise<EstadoDelChat> {
+    const e = alEnviar(historiaLarga(), "¿qué puedo hacer acá?");
+    dibujar(e);
+    await tick();
+    lista().scrollTop = 0;
+    await tick();
+    await tick();
+    return e;
+  }
+
+  it("la lista es un `log` educado y, pegada al fondo, no hay botón", async () => {
+    dibujar(historiaLarga());
+    await tick();
+    expect(lista().getAttribute("role")).toBe("log");
+    expect(lista().getAttribute("aria-live")).toBe("polite");
+    expect(boton()).toBeNull();
+  });
+
+  it("aparece al subir a leer, sin punto mientras no llegó nada, con el rótulo de TEXTOS y alcanzable con el teclado", async () => {
+    await leyendoArriba();
+    const b = boton();
+    expect(b).not.toBeNull();
+    expect(b!.getAttribute("aria-label")).toBe("Scroll to the latest message");
+    expect(b!.tagName).toBe("BUTTON");
+    expect(b!.tabIndex).toBe(0);
+    expect(punto()).toBeNull();
+  });
+
+  it("si llega algo mientras lee arriba: el punto «nuevo», sin mover la lista", async () => {
+    let e = await leyendoArriba();
+    e = aplicar(e, { v: 1, t: "usuario", texto: "¿qué puedo hacer acá?" }, { v: 1, t: "asistente", texto: P1 + P2 + P3 }, { v: 1, t: "espera", indice: 20 });
+    dibujar(e);
+    await tick();
+    expect(lista().scrollTop).toBe(0);
+    expect(punto()).not.toBeNull();
+    expect(boton()!.getAttribute("aria-label")).toContain("New messages below");
+  });
+
+  it("apretarlo baja al fondo, borra el punto y esconde el botón; después la lista vuelve a seguir lo nuevo", async () => {
+    let e = await leyendoArriba();
+    e = aplicar(e, { v: 1, t: "usuario", texto: "¿qué puedo hacer acá?" }, { v: 1, t: "asistente", texto: P1 + P2 + P3 });
+    dibujar(e);
+    await tick();
+    boton()!.click();
+    await tick();
+    await tick();
+    expect(escondido()).toBe(0);
+    expect(boton()).toBeNull();
+    expect(punto()).toBeNull();
+    e = aplicar(e, { v: 1, t: "asistente", texto: P2 + P2 });
+    dibujar(e);
+    expect(escondido()).toBe(0);
+  });
+
+  it("volver al fondo con la mano también lo esconde", async () => {
+    await leyendoArriba();
+    lista().scrollTop = lista().scrollHeight;
+    await tick();
+    await tick();
+    expect(boton()).toBeNull();
+  });
+});

@@ -146,6 +146,7 @@ describe("textoDelError (T0.2): el idioma de un error no depende del backend", (
     expect(textoDelError("sesion_vencida")).toBe("The previous conversation expired. Write to start a new one.");
     expect(textoDelError("limite_de_sesion")).toBe("This conversation reached its limit. Write to start a new one.");
     expect(textoDelError("tope_de_mensajes")).toBe("The chat can't take more messages right now. Try again later.");
+    expect(textoDelError("demasiadas_solicitudes")).toBe("Too many messages in a row. Wait a few minutes and try again.");
     expect(textoDelError("confirmacion_no_vigente")).toBe("That confirmation is out of date. Check the latest summary and answer that one.");
     for (const c of ["origen_no_admitido", "chat_deshabilitado", "proyecto_desconocido"]) {
       expect(textoDelError(c)).toBe("The chat isn't available on this site right now.");

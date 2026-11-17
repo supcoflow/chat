@@ -12,7 +12,7 @@ There is no hidden telemetry. In this demo the chat talks only to the demo serve
 1. Install it (Next.js with the App Router, React 18 or newer):
 
    ```bash
-   npm i @supcoflow/chat@2.4.0
+   npm i @supcoflow/chat@2.5.0
    ```
 
 2. Start the demo server and leave it running:
@@ -196,6 +196,7 @@ show up, pass `onDiagnostico` or look at the browser console on `localhost`:
 | 403 | `origen_no_admitido` | add the site's origin on that same screen |
 | 404 | `proyecto_desconocido` | check `tenantId` / `projectId` |
 | 429 | `tope_de_mensajes` | wait: the cap reopens on its own |
+| 429 | `demasiadas_solicitudes` | too many requests in a short time: wait the `Retry-After` seconds |
 | 502 | `motor_inalcanzable` | it's on Supcoflow's side |
 | 0 | `sin_respuesta` | network, CSP or a mistyped `backendUrl` |
 

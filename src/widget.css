@@ -70,7 +70,13 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 .scf-o::before, .scf-o::after { content: ""; flex: 1; height: 1px; background: var(--scf-linea); }
 
 /* Mensajes: grupos con avatar */
-.scf-mensajes { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 14px; }
+.scf-lista { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.scf-mensajes { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 14px; }
+.scf-bajar { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 1px solid var(--scf-linea); background: var(--scf-fondo); color: var(--scf-texto); box-shadow: 0 6px 16px -6px rgba(0,0,0,.35); display: grid; place-items: center; cursor: pointer; }
+.scf-bajar:hover { background: var(--scf-tinte); }
+.scf-bajar:focus-visible { outline: 2px solid var(--scf-acento); outline-offset: 2px; }
+.scf-bajar svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.scf-bajar-punto { position: absolute; top: 1px; right: 1px; width: 9px; height: 9px; border-radius: 50%; background: var(--scf-acento); box-shadow: 0 0 0 2px var(--scf-fondo); }
 .scf-grupo { display: flex; gap: 8px; max-width: 88%; }
 .scf-grupo--asistente { align-self: flex-start; }
 .scf-grupo--usuario { align-self: flex-end; }

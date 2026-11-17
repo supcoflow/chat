@@ -139,7 +139,7 @@ The text the user reads is yours (or the widget's), not the model's. Core event:
 #### `error`
 `{ "t": "error", "codigo": string, "mensaje": string, "terminal": boolean }` — `terminal: true` is a **border** (the conversation is over); `false` does not close the
 stream (a non-terminal error is followed by `espera`) and is worth retrying. Decide what to show by `codigo`; `mensaje` comes from servers and libraries, may be in any
-language, and is not meant for your users. Core event: `error`.
+language, and is not meant for your users — except for `ia_no_disponible` and `ia_sin_configurar` (see [`core.md`](./core.md#errors)). Core event: `error`.
 
 ### Error codes
 
@@ -149,10 +149,12 @@ The list is **not closed**: show a generic failure for a code you do not know.
 |---|---|---|
 | `red` | the network failed before or during the request (made up by the client) | retry |
 | `tope_de_mensajes` | the project reached its daily message cap | say the chat is unavailable for now |
+| `demasiadas_solicitudes` | too many requests in a short time from this address or conversation (HTTP 429, `Retry-After` header, `reintentar_en` seconds) | say to wait a few minutes; the message stays on screen |
 | `origen_no_admitido` | this site's origin is not in the project's allowed origins | a configuration problem: tell the developer (it is also in `/api/chat/estado`) |
 | `chat_deshabilitado` | the chat of this project is off | hide the chat |
 | `proyecto_desconocido` | the ids do not belong to any project | a configuration problem |
 | `motor_inalcanzable` | Supcoflow's backend could not reach its engine | retry later |
+| `ia_no_disponible`, `ia_sin_configurar` | the site's AI account failed (key, balance, limit, provider) or is not configured; not terminal, and `mensaje` carries the sentence of the cause, meant to be shown as text | show `mensaje` as text (see [`core.md`](./core.md#errors)); do not offer «retry» |
 | `sesion_vencida` | the conversation expired | start a new one |
 | `limite_de_sesion` | the conversation reached its limit (terminal) | start a new one |
 | `confirmacion_no_vigente` | the confirmation was answered when it was no longer the current one (the user wrote something in between) | the report was **not** sent; show the new state |
