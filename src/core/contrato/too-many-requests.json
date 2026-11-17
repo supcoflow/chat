@@ -1,0 +1,70 @@
+{
+  "descripcion": "Demasiadas solicitudes seguidas (429 con `reintentar_en`): un fallo HTTP se vuelve UN evento `error` no terminal con el `motivo` del cuerpo como código (`demasiadas_solicitudes`). La conversación no se abrió (sin sesión) y lo que escribió el usuario queda a la vista.",
+  "acciones": [
+    {
+      "send": "hello"
+    }
+  ],
+  "respuestas": [
+    {
+      "http": 429,
+      "cuerpo": {
+        "ok": false,
+        "motivo": "demasiadas_solicitudes",
+        "reintentar_en": 300
+      }
+    }
+  ],
+  "esperado": {
+    "pedidos": [
+      {
+        "metodo": "GET",
+        "ruta": "/api/chat/estado?tenant_id=tnt_a&project_id=proj_b"
+      },
+      {
+        "metodo": "POST",
+        "ruta": "/api/chat/sesion",
+        "cuerpo": {
+          "mensaje": "hello"
+        }
+      }
+    ],
+    "eventos": [
+      {
+        "type": "error",
+        "error": {
+          "code": "demasiadas_solicitudes",
+          "message": "HTTP 429",
+          "terminal": false
+        }
+      }
+    ],
+    "estado": {
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "text": "hello",
+          "pending": false
+        }
+      ],
+      "pendingQuestion": null,
+      "busy": false,
+      "error": {
+        "code": "demasiadas_solicitudes",
+        "message": "HTTP 429",
+        "terminal": false
+      },
+      "activity": null,
+      "hasSession": false,
+      "reported": false,
+      "attachments": [],
+      "canAttachMore": true,
+      "allows": {
+        "screenshots": true,
+        "elements": true,
+        "pageAndBrowser": true
+      }
+    }
+  }
+}

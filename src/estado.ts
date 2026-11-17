@@ -60,6 +60,8 @@ export interface ErrorVisible {
   codigo: string;
   mensaje: string;
   terminal: boolean;
+  /** El HTTP de rechazo que inventa el cliente (`ErrorDeRechazo`): su `mensaje` es el status, no una frase del backend para la persona. */
+  rechazado?: true;
 }
 
 export interface EstadoDelChat {
@@ -247,7 +249,8 @@ function reducirEvento(e: EstadoDelChat, ev: EventoDelWidget): EstadoDelChat {
     case "fin":
       return { ...cerrarAbiertos(e), ocupado: false, cursor: null };
     case "error": {
-      const conError = { ...e, error: { codigo: ev.codigo, mensaje: ev.mensaje, terminal: ev.terminal } };
+      const rechazado = (ev as { rechazado?: unknown }).rechazado === true;
+      const conError = { ...e, error: { codigo: ev.codigo, mensaje: ev.mensaje, terminal: ev.terminal, ...(rechazado ? { rechazado: true as const } : {}) } };
       return ev.terminal ? { ...cerrarAbiertos(conError), ocupado: false, cursor: null } : conError;
     }
     default:
@@ -256,11 +259,18 @@ function reducirEvento(e: EstadoDelChat, ev: EventoDelWidget): EstadoDelChat {
   }
 }
 
+const MAX_FRASE_DE_IA = 200;
+function frasePlanaDelBackend(mensaje: string | undefined): string | null {
+  if (typeof mensaje !== "string") return null;
+  const limpia = mensaje.replace(/[\u0000-\u001f\u007f<>]/g, " ").replace(/\s+/g, " ").trim();
+  return limpia.length === 0 || limpia.length > MAX_FRASE_DE_IA ? null : limpia;
+}
+
 /** 2.3.0 (T0.2): el texto que se le muestra al usuario por un error. Lo decide el CÓDIGO, nunca el
- * `mensaje` del backend (que puede venir de eve o del motor, en cualquier idioma). Los códigos
+ * `mensaje` del backend (que puede venir de eve o del motor, en cualquier idioma), salvo `ia_*` (ver abajo). Los códigos
  * son los que el backend emite hoy (`src/traductor/`, la admisión del motor); uno desconocido cae
  * a «Couldn't send», que es lo que el widget decía para todo lo que no era `sesion_vencida`. */
-export function textoDelError(codigo: string): string {
+export function textoDelError(codigo: string, mensaje?: string): string {
   switch (codigo) {
     case "sesion_vencida":
       return TEXTOS.sesionVencida;
@@ -268,11 +278,15 @@ export function textoDelError(codigo: string): string {
       return TEXTOS.limiteDeSesion;
     case "tope_de_mensajes":
       return TEXTOS.topeDeMensajes;
+    case "demasiadas_solicitudes":
+      return TEXTOS.demasiadasSolicitudes;
     case "confirmacion_no_vigente":
       return TEXTOS.confirmacionVencida;
     case "ia_no_disponible":
     case "ia_sin_configurar":
-      return TEXTOS.asistenteNoDisponible;
+      // Única excepción a «lo decide el código»: la frase de la CAUSA (esperar, reintentar, avisar al equipo del sitio) vive en una sola tabla, la del backend
+      // (`MENSAJE_POR_CAUSA`, agent/lib/errores-de-ia.ts), en el idioma de la app. Acá se dibuja como TEXTO (nunca como HTML) y acotada; si no viene, la frase neutra de siempre.
+      return frasePlanaDelBackend(mensaje) ?? TEXTOS.asistenteNoDisponible;
     case "origen_no_admitido":
     case "chat_deshabilitado":
     case "proyecto_desconocido":

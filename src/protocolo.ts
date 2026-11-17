@@ -108,6 +108,7 @@ export const CODIGOS_DE_ERROR_V1: readonly string[] = [
   "sesion_vencida",
   "limite_de_sesion",
   "tope_de_mensajes",
+  "demasiadas_solicitudes",
   "confirmacion_no_vigente",
   "origen_no_admitido",
   "chat_deshabilitado",

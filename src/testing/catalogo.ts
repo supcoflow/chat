@@ -30,6 +30,7 @@ import attachment_failed from "../core/contrato/attachment-failed.json";
 import report_with_attachment from "../core/contrato/report-with-attachment.json";
 import assistant_question from "../core/contrato/assistant-question.json";
 import chat_unavailable from "../core/contrato/chat-unavailable.json";
+import too_many_requests from "../core/contrato/too-many-requests.json";
 
 const FICHAS: { name: string; description: string; covers: string[]; grabacion: Grabacion }[] = [
   { name: "report-confirmed", description: "The happy path of a bug: the assistant asks, summarizes, raises the report confirmation with its two buttons, and the person's \"yes\" sends the report. `confirmReport` answers `approve` with the id of the confirmation on screen.", covers: ["P6", "P8"], grabacion: report_confirmed as Grabacion },
@@ -58,6 +59,7 @@ const FICHAS: { name: string; description: string; covers: string[]; grabacion: 
   { name: "report-with-attachment", description: "A report with an attachment that already uploaded: the pointed element uploads when the conversation opens and, on confirming, it is marked as sent with the report (`sentWithReport`). The confirmation has to say which attachments go with the report. Needs a DOM.", covers: ["P6", "P8", "P10"], grabacion: report_with_attachment as Grabacion },
   { name: "assistant-question", description: "A question from the assistant that is not the report confirmation: three options plus free text. It is answered with the id of the question that was drawn and one of its options. The backend does not send these today (the assistant asks in its text); the protocol has them, so handle them.", covers: ["P7"], grabacion: assistant_question as Grabacion },
   { name: "chat-unavailable", description: "The chat of this project is off for this origin: `GET /api/chat/estado` answers 403 `chat_deshabilitado`. The interface does not offer the chat, or shows it disabled.", covers: ["P1"], grabacion: chat_unavailable as Grabacion },
+  { name: "too-many-requests", description: "Too many requests in a short time from this address or conversation (HTTP 429, `Retry-After` header, `reintentar_en` seconds), on the first message: the failure becomes ONE non-terminal error with the code `demasiadas_solicitudes`; no conversation opened and what the person typed stays on screen. The interface says to wait a few minutes and never offers a button that asks for more budget.", covers: ["P3", "P9"], grabacion: too_many_requests as Grabacion },
 ];
 
 export const scenarios: readonly Scenario[] = Object.freeze(FICHAS.map((f) => escenarioDesdeGrabacion(f.grabacion, f)));

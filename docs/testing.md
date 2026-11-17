@@ -92,6 +92,7 @@ The two reload scenarios start with a conversation the tab already had. `storage
 | `steps-after-the-answer` | P4 | a step that arrives after the answer |
 | `conversation-ended` | P3, P8 | the server ends the conversation; the next message opens another |
 | `daily-cap-on-open` | P3, P9 | the daily cap on the first message (`tope_de_mensajes`) |
+| `too-many-requests` | P3, P9 | too many requests in a short time (`demasiadas_solicitudes`, HTTP 429) on the first message; say to wait a few minutes, what was written stays |
 | `daily-cap-mid-conversation` | P3, P9 | the daily cap in the middle of the conversation; what was written stays. `retry()` then resends the same message and the error clears |
 | `session-limit-mid-conversation` | P9 | the conversation limit (`limite_de_sesion`, terminal) in the middle |
 | `terminal-error` | P9 | a terminal error on the first turn |

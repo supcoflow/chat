@@ -71,9 +71,12 @@ const INVENTARIO: Record<keyof typeof TEXTOS, string> = {
   // T0.2: los errores del backend con texto propio. La landing no los muestra; los eligió quien
   // construyó la 2.3.0 (anotado en el resumen de la fase).
   limiteDeSesion: "This conversation reached its limit. Write to start a new one.",
+  demasiadasSolicitudes: "Too many messages in a row. Wait a few minutes and try again.",
   topeDeMensajes: "The chat can't take more messages right now. Try again later.",
   chatNoDisponible: "The chat isn't available on this site right now.",
   asistenteNoDisponible: "The assistant isn't available right now. Please try again later.",
+  bajarAlUltimo: "Scroll to the latest message",
+  hayNuevo: "New messages below",
   confirmacionVencida: "That confirmation is out of date. Check the latest summary and answer that one.",
 };
 

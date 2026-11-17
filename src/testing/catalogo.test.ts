@@ -17,7 +17,7 @@ const LOS_14_DE_ANTES = [
 ];
 const LOS_DE_LA_PRIVACIDAD = ["data-agreement-closed", "confirmation-from-older-backend"];
 const LOS_NUEVOS = ["reload-of-expired-conversation", "link-to-another-site", "image-in-text", "html-in-text", "daily-cap-mid-conversation", "session-limit-mid-conversation", "attachment-failed"];
-const DE_APOYO = ["assistant-question", "report-with-attachment", "chat-unavailable"];
+const DE_APOYO = ["assistant-question", "report-with-attachment", "chat-unavailable", "too-many-requests"];
 
 describe("el catálogo de escenarios", () => {
   it("tiene un escenario por cada archivo grabado, ni uno más ni uno menos", () => {

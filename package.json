@@ -1,6 +1,6 @@
 {
   "name": "@supcoflow/chat",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Supcoflow's embeddable support chat: answers usage questions from your product's guide and files a report when the problem is a bug.",
   "license": "MIT",
   "author": "Supcoflow",

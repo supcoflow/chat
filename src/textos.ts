@@ -73,6 +73,7 @@ export const TEXTOS = Object.freeze({
   // 2.3.0 (T0.2): un texto propio por código de error conocido; el `mensaje` del backend no se
   // dibuja, así el idioma de un error no depende de quién lo escribió.
   limiteDeSesion: "This conversation reached its limit. Write to start a new one.",
+  demasiadasSolicitudes: "Too many messages in a row. Wait a few minutes and try again.",
   topeDeMensajes: "The chat can't take more messages right now. Try again later.",
   chatNoDisponible: "The chat isn't available on this site right now.",
   // Tanda 10, P4: `ia_no_disponible` / `ia_sin_configurar` (la IA del chat es del cliente y no anda: clave rechazada, sin saldo, sin configurar…). Es la MISMA frase neutra que manda el backend
@@ -81,6 +82,9 @@ export const TEXTOS = Object.freeze({
   // 2.3.0 (A2): la respuesta a una confirmación vieja (el usuario escribió después, o se pidió otra): la
   // política del backend la rechaza y el pedido vigente sigue esperando.
   confirmacionVencida: "That confirmation is out of date. Check the latest summary and answer that one.",
+  // 2.5.0: el botón que baja al último mensaje cuando la persona subió a leer, y el aviso de que llegó algo abajo.
+  bajarAlUltimo: "Scroll to the latest message",
+  hayNuevo: "New messages below",
 });
 
 /** Los dos arranques de la pantalla de inicio (§5.2 de la marca): cada uno manda su `mensaje`

@@ -1,5 +1,5 @@
 import { Fragment } from "preact";
-import { useLayoutEffect, useRef } from "preact/hooks";
+import { useLayoutEffect, useRef, useState } from "preact/hooks";
 import type { Respuesta } from "../cliente";
 import { agruparMensajes, mostrarIndicador, reintentarSirve, textoDelError, textoDelPaso, type Desenlace, type EstadoDelChat } from "../estado";
 import { TEXTOS } from "../textos";
@@ -27,6 +27,16 @@ export function Mensajes(props: { estado: EstadoDelChat; titulo: string; logoUrl
   // La referencia se actualiza en el evento `scroll`, y sólo la persona la despega: subir (bajar el `scrollTop`) la suelta, aunque sea poco; un cambio de alto que no es de ella —el cuadro
   // de escribir que crece, el teclado del celular, la ventana— deja el `scrollTop` donde estaba (o lo acota hacia el fondo) y el `scroll` propio del navegador al reacomodar NO la despega.
   const pegada = useRef(true);
+  // «Bajar a lo último» (2.5.0): el botón aparece mientras la lista NO está pegada al fondo, y lleva un punto si, estando así, llegó algo nuevo abajo. Es sólo un espejo de `pegada` y del alto, y
+  // vive en SU componente (`BotonBajar`): cambiarlo NO vuelve a dibujar esta lista, porque un dibujo en medio de un arrastre lento corre el efecto de abajo y, con `pegada` en true, la baja al fondo.
+  const vista = useRef<VistaDelBoton>({ despegada: false, hayNuevo: false, avisar: null });
+  const poner = (parcial: Partial<Pick<VistaDelBoton, "despegada" | "hayNuevo">>) => {
+    const v = vista.current;
+    if ((parcial.despegada === undefined || parcial.despegada === v.despegada) && (parcial.hayNuevo === undefined || parcial.hayNuevo === v.hayNuevo)) return;
+    Object.assign(v, parcial);
+    v.avisar?.();
+  };
+  const altoVisto = useRef(0);
   const ultimoTop = useRef(0);
   const alDesplazar = () => {
     const el = lista.current;
@@ -36,6 +46,8 @@ export function Mensajes(props: { estado: EstadoDelChat; titulo: string; logoUrl
     pegada.current = distancia <= 1 ? true : subio ? false : pegada.current || distancia <= MARGEN_DEL_FONDO;
     // Una bajada chica NO mueve la referencia: así varias seguidas (un dedo o un trackpad que suben despacio, ≤ 1 px por evento) suman hasta pasar de 1 px. Sólo baja al llegar al fondo o al detectar la subida.
     ultimoTop.current = distancia <= 1 || subio ? el.scrollTop : Math.max(ultimoTop.current, el.scrollTop);
+    // Sólo MIRA `pegada` para el botón «bajar a lo último»: la regla de arriba no cambia.
+    poner(pegada.current ? { despegada: false, hayNuevo: false } : { despegada: true });
   };
   const alFondo = (el: HTMLElement) => { el.scrollTop = el.scrollHeight; ultimoTop.current = el.scrollTop; };
   const ultimoDelUsuario = useRef<number | null>(null);
@@ -60,12 +72,22 @@ export function Mensajes(props: { estado: EstadoDelChat; titulo: string; logoUrl
       if (claveDelUltimo !== null) pegada.current = true;
     }
     if (pegada.current) alFondo(el);
+    else if (el.scrollHeight > altoVisto.current) poner({ hayNuevo: true }); // la lista creció (algo llegó) con la persona leyendo más arriba
+    altoVisto.current = el.scrollHeight;
   });
+  const bajarAlUltimo = () => {
+    const el = lista.current;
+    if (el === null) return;
+    pegada.current = true;
+    alFondo(el);
+    poner({ despegada: false, hayNuevo: false });
+  };
 
   const grupos = agruparMensajes(estado.mensajes);
 
   return (
-    <div class="scf-mensajes" ref={lista} onScroll={alDesplazar} aria-live="polite">
+    <div class="scf-lista">
+    <div class="scf-mensajes" ref={lista} onScroll={alDesplazar} role="log" aria-live="polite">
       {grupos.map((g) =>
         g.rol === "desenlace" ? (
           g.mensajes.map((m) => m.rol === "desenlace" && <TarjetaDeDesenlace key={m.clave} desenlace={m.desenlace} puedeEmpezarOtra={estado.cursor !== null && !estado.ocupado} onNuevaConversacion={props.onNuevaConversacion} />)
@@ -116,11 +138,32 @@ export function Mensajes(props: { estado: EstadoDelChat; titulo: string; logoUrl
       {estado.error !== null && (
         <div class="scf-error" role="alert">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg>
-          <span>{textoDelError(estado.error.codigo)}</span>
+          <span>{textoDelError(estado.error.codigo, estado.error.rechazado === true ? undefined : estado.error.mensaje)}</span>
           {reintentarSirve(estado.error) && <button type="button" onClick={() => { bajarSiempre(); props.onReintentar(); }}>{TEXTOS.reintentar}</button>}
         </div>
       )}
     </div>
+    <BotonBajar vista={vista.current} onBajar={bajarAlUltimo} />
+    </div>
+  );
+}
+
+interface VistaDelBoton { despegada: boolean; hayNuevo: boolean; avisar: (() => void) | null }
+
+/** 2.5.0: «bajar a lo último». Lee `vista` (la que escribe `Mensajes`) y se dibuja SOLO cuando esa vista cambia. */
+function BotonBajar(props: { vista: VistaDelBoton; onBajar: () => void }) {
+  const [, redibujar] = useState(0);
+  useLayoutEffect(() => {
+    props.vista.avisar = () => redibujar((n) => n + 1);
+    return () => { props.vista.avisar = null; };
+  }, [props.vista]);
+  const { despegada, hayNuevo } = props.vista;
+  if (!despegada) return null;
+  return (
+    <button type="button" class="scf-bajar" onClick={props.onBajar} aria-label={hayNuevo ? `${TEXTOS.bajarAlUltimo}. ${TEXTOS.hayNuevo}` : TEXTOS.bajarAlUltimo} title={TEXTOS.bajarAlUltimo}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0l-6-6m6 6l6-6"/></svg>
+      {hayNuevo && <span class="scf-bajar-punto" aria-hidden="true" />}
+    </button>
   );
 }
 
